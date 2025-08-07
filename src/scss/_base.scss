@@ -1,0 +1,144 @@
+@use "colors";
+@use "variables";
+@use '_pixel-to-rem.scss';
+
+/* @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap'); */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+html {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+}
+
+
+/* html::-webkit-scrollbar {
+    width: 12px;
+} */
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: variables.$primary-font;
+    font-size: _rem(16px);
+    color: colors.$black;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* background-color: hsla(232, 100%, 32%);
+    background-attachment: fixed;
+    background: linear-gradient(120deg, hsla(232, 100%, 32%, 1) 0%, hsla(318, 63%, 56%, 1) 400%);
+    background: -moz-linear-gradient(120deg, hsla(232, 100%, 32%, 1) 0%, hsla(318, 63%, 56%, 1) 100%);
+    background: -webkit-linear-gradient(120deg, hsla(232, 100%, 32%, 1) 0%, hsla(318, 63%, 56%, 1) 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%; */
+    background-color: colors.$body-bg;
+    background-color: #f5fcfe;
+}
+
+
+/* Works on Firefox */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #fafafa #ddd;
+}
+
+
+/* Works on Chrome, Edge, and Safari */
+
+*::-webkit-scrollbar {
+    width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: orange;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: blue;
+    border-radius: 20px;
+    border: 3px solid orange;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+ul,
+ol,
+li,
+dl,
+dt,
+dd {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+form,
+fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+
+/* 
+.scrollbar {
+    height: 300px;
+    width: 20%;
+    overflow: auto;
+    padding: 0 0px;
+}
+ */
+
+
+/*       ScrollBar 1        */
+
+#scrollbar1::-webkit-scrollbar {
+    width: 2px;
+    height: 8px;
+}
+
+#scrollbar1::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+    background-color: hsl(232, 74%, 27%);
+    border: 0px solid hsl(232, 74%, 27%);
+}
+
+#scrollbar1::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #D648AC;
+}

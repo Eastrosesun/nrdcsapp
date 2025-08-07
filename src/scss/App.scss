@@ -1,0 +1,364 @@
+@use '_colors';
+@use '_layout';
+@use '_variables';
+@use '_pixel-to-rem';
+@use '_flexbox';
+@use '_base';
+@use '_header';
+@use 'headings';
+@use 'forms';
+@use '_spinner';
+
+/* .titillium-web-extralight {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+
+.titillium-web-light {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.titillium-web-regular {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.titillium-web-semibold {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.titillium-web-bold {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.titillium-web-black {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+}
+
+.titillium-web-extralight-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+}
+
+.titillium-web-light-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+
+.titillium-web-regular-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.titillium-web-semibold-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.titillium-web-bold-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+} */
+
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #22201c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+.brand-title {
+    font-size: 3rem;
+    color: #d9d9d9;
+}
+
+.brand-title span {
+    color: #ffde59;
+}
+
+.brand-description {
+    font-size: 1.4rem;
+}
+
+.links {
+    display: flex;
+}
+
+.links a {
+    color: #d9d9d9;
+    font-size: 1.2rem;
+    margin: 1rem;
+}
+
+.dragContainer {
+    display: flex;
+    position: relative;
+    padding: _rem(8px) _rem(16px);
+    font-weight: 500;
+    color: colors.$white;
+    border: 2px dashed #98056c;
+    flex-basis: 100%;
+    input[type='file'] {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        top: 0;
+        left: 0;
+    }
+}
+
+.imagePreview {
+    overflow-y: scroll;
+    img {
+        /* width: 100%;
+        height: 100%; */
+        width: 100%;
+        object-fit: cover;
+    }
+    &.imageContainer {
+        background-color: #D648AC;
+        background-color: rgb(192, 37, 146, 0.5);
+    }
+    &__message {
+        color: #fff;
+        display: flex;
+        flex-basis: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+/*****************
+    IMAGE TILE CSS
+*******************/
+
+.overflow {
+    overflow-x: auto;
+}
+
+.image-tile {
+    /* width: 90vw; */
+    /* height: _rem(350px); */
+    margin: _rem(16px) 0;
+    display: flex;
+    flex-direction: row;
+    gap: _rem(20px);
+    /* overflow-y: auto; */
+    &__container {
+        cursor: pointer;
+        /*  min-width: _rem(200px);
+        min-height: _rem(113px); */
+        /* margin: _rem(16px); */
+        text-align: center;
+        padding: variables.$box__pad;
+        background-color: colors.$white;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        background: url(https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        &__col {
+            flex: 0 0 _rem(96px);
+        }
+    }
+    &__title {
+        text-align: center;
+        padding: _rem(5px) _rem(10px);
+        font-size: _rem(16px);
+        font-weight: 700;
+        background-color: #fff;
+    }
+}
+
+.h-80 {
+    height: 80%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+
+/***********************************
+  FONT COLORS
+************************************/
+
+.light-grey {
+    color: colors.$light-grey;
+}
+
+.mid-grey {
+    color: colors.$mid-grey;
+}
+
+.mid-grey {
+    color: colors.$mid-grey;
+}
+
+.dark-grey {
+    color: colors.$dark-grey;
+}
+
+.darkest-grey {
+    color: colors.$darkest-grey;
+}
+
+
+/***********************************
+  FONT SIZES
+************************************/
+
+.txt-11 {
+    font-size: 11px;
+}
+
+.txt-12 {
+    font-size: 12px;
+}
+
+.txt-13 {
+    font-size: 13px;
+}
+
+.txt-14 {
+    font-size: 14px;
+}
+
+.txt-16 {
+    font-size: 16px;
+}
+
+.txt-18 {
+    font-size: 18px;
+}
+
+.txt-20 {
+    font-size: 20px;
+}
+
+.txt-22 {
+    font-size: 22px;
+}
+
+.txt-24 {
+    font-size: 24px;
+}
+
+.txt-30 {
+    font-size: 30px;
+}
+
+.thin {
+    font-weight: 100
+}
+
+.normal {
+    font-weight: 500
+}
+
+.thick {
+    font-weight: 600;
+}
+
+.thicker {
+    font-weight: 700;
+}
+
+.thickest {
+    font-weight: 800;
+}
+
+.pad-10 {
+    padding: 10px;
+}
+
+.pad-20 {
+    padding: 20px;
+}
+
+.pad-10-20 {
+    padding: 10px 20px;
+}
+
+.pad-20-10 {
+    padding: 20px 10px;
+}
+
+.m-r-10 {
+    margin-right: 10px;
+}
+
+.m-b-10 {
+    margin-bottom: 10px;
+}
+
+.m-b-20 {
+    margin-bottom: 20px;
+}
+
+.b-r {
+    border-right: 1px solid colors.$border-color;
+}
+
+.form-error,
+.error {
+    .form-control,
+    .select-container {
+        border: 1px solid #cc0000;
+    }
+}
+
+.form-error label,
+.error label {
+    display: inline-block;
+    color: #cc0000 !important;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.orderPreview {
+    padding: 10px;
+    background: #f5fcfe;
+    border: 1px solid #e1f0f4;
+    p {
+        margin-bottom: 20px;
+    }
+}

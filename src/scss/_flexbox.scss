@@ -1,0 +1,127 @@
+@use "variables";
+
+/*
+$grid__bp-sm: 576;
+$grid__bp-md: 768;
+$grid__bp-lg: 992;
+$grid__bp-xl: 1200;
+*/
+
+.container {
+    margin: 0 auto;
+    display: flex;
+    width: 100%;
+    /*  @media screen and (max-width: 600px) {
+        width: 100%;
+    }
+    @media screen and (min-width: 1299px) {
+        width: $grid__bp-xl * 1px;
+        max-width: $grid__bp-xl * 1px;
+    } */
+    &__parent {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    &__fluid {
+        margin: 0;
+        display: flex;
+        width: 100%;
+        max-width: 100%;
+    }
+    &__row {
+        display: flex;
+        flex: 1;
+        flex-wrap: wrap;
+    }
+    &__col {
+        display: flex;
+        column-gap: 10px;
+        box-sizing: border-box;
+    }
+    @for $i from 1 through variables.$grid__cols {
+        &__col-#{$i} {
+            /* margin: 0 _rem8px); */
+            display: flex;
+            box-sizing: border-box;
+            width: 100%;
+            flex-basis: calc((100 / (variables.$grid__cols / $i))) * 1% - 1%;
+        }
+    }
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.gap-10 {
+    gap: 10px;
+}
+
+.gap-20 {
+    gap: 20px;
+}
+
+
+/****************
+MAIN CONTENT
+******************/
+
+.main-content {
+    /*  display: flex; 
+    padding: $box__pad;*/
+    /* margin-left: $sidebar__width;
+    width: calc(100% - $sidebar__width); */
+}
+
+
+/****************
+MAIN AXIS
+******************/
+
+.maxis-space-around {
+    justify-content: space-around;
+}
+
+.maxis-space-between {
+    justify-content: space-between;
+}
+
+.maxis-center {
+    justify-content: center;
+}
+
+.justify-end {
+    align-items: baseline;
+    justify-content: end;
+}
+
+.align-self-start {
+    align-self: flex-start;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+
+/****************
+CROSS AXIS
+******************/
+
+.caxis-start {
+    align-items: flex-start;
+}
+
+.caxis-center {
+    align-items: center;
+}
+
+.caxis-end {
+    align-items: flex-end;
+}
+
+
+/****************
+ALIGN ITEMS
+******************/

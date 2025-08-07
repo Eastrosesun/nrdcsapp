@@ -1,0 +1,173 @@
+@use "colors";
+@use "variables";
+.form-section-title {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.form-control {
+    font-family: variables.$primary-font;
+    font-size: 12px;
+    background: #fff;
+    border-radius: 0;
+    border: 1px solid #bfbbbb;
+    padding: 10px;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    box-shadow: 1px 1px 2px #dfdfdf;
+}
+
+.form-control:focus {
+    outline: none;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    .form-error {
+        color: #ca0808;
+        .form-control {
+            border: 1px solid #ca0808;
+        }
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.btn {
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    margin: 0 0;
+    padding: 12px 16px;
+    border-radius: 4px;
+    border: 0;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 2px 1px 2px #e4e6ef;
+}
+
+.btn-lg {
+    padding: 8px 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.btn-med {
+    padding: 8px 10px;
+    font-size: 12px;
+}
+
+.btn-sticky {
+    position: sticky;
+}
+
+.btn-sm {
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: colors.$black;
+}
+
+.btn-outlined {
+    font-size: _rem(16px);
+    color: #333;
+    border: 1px solid #aaa;
+    background-color: transparent;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+
+/*********************
+    DATE PICKER
+***********************/
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+
+/*********************
+    SELECT BOX
+***********************/
+
+.select-container {
+    position: relative;
+    cursor: pointer;
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    background: #fff;
+    border-radius: 0;
+    border: 1px solid #bfbbbb;
+    padding: 10px;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    box-shadow: 1px 1px 2px #dfdfdf;
+    .select-header {
+        font-size: 12px;
+        font-weight: 500;
+        padding: 0 0px;
+        &::after {
+            position: absolute;
+            right: 5%;
+            content: " ";
+            border-left: 2px solid #aaa;
+            border-bottom: 2px solid #aaa;
+            height: 8px;
+            width: 8px;
+            transform: rotate(-45deg);
+        }
+    }
+    .select-options {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 1px 1px 2px #dfdfdf;
+        border: 1px solid #bfbbbb;
+        z-index: 1;
+        span {
+            padding: 10px 10px;
+            font-size: 12px;
+            font-weight: 400;
+            cursor: pointer;
+            border: 1px solid #eee;
+            svg {
+                margin-right: 6px;
+            }
+        }
+    }
+    .chip {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 2px 2px;
+        margin-right: 5px;
+        color: #000;
+        font-weight: 500;
+        background-color: aliceblue;
+        max-width: 120px;
+        width: 90px;
+        text-overflow: ellipsis;
+        border-radius: 12px;
+        overflow: hidden;
+        text-wrap: auto;
+        text-align: center;
+    }
+}
