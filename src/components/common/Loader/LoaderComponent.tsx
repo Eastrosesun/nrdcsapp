@@ -6,6 +6,8 @@ const withLoader = (WrappedComponent:any) => {
         
         /******STATE VARIABLES */
         const [loading, setLoading] = useState(false);
+        console.log('....loading....');
+        console.log(loading);
         return (
             <>
                 {loading && <Spinner /> }

@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import data from './data';
 import TableGrid from "../../common/Table/Table";
 import Selectbox from "../../common/Forms/SelectBox/SelectBox";
+import DatePicker from "react-datepicker";
 
 
 const columns = [
@@ -59,6 +60,9 @@ const paymentOptions = [
 const monthOptions:any = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ]
+
+const searchPayLoadObj:any = { start_date: ''}
+
 const Dashboard = (props: any) => {
 
   /*********************
@@ -69,6 +73,8 @@ const Dashboard = (props: any) => {
   const [orderData, setOrderData] = useState<any>([]);
   const [appData, setAppData] = useState([]);
   const { setLoading } = props;
+
+  const [searchPayLoad, setSearchPayLoad] = useState(searchPayLoadObj);
 
   //const { patientsData: {mutation: patientData, data}, } = useDashboardApi();
 
@@ -88,6 +94,10 @@ const Dashboard = (props: any) => {
   const getApplications = () => {
 
   }
+  /********************
+   * GET ORDERS FROM FIREBASE
+   * 
+   */
   const getOrdersFromFirebase = async () => {
     /* const q = query(collection(db, 'nrdcs'));
     const docRef = doc(db, "nrdcs");
@@ -105,10 +115,12 @@ const Dashboard = (props: any) => {
     const fetchedOrders:any = [];
     const orders = onSnapshot(q, (QuerySnapshot) => {
       console.log('orders snapshot');
+      console.log(QuerySnapshot);
       QuerySnapshot.forEach((order) => {
         return fetchedOrders.push({...order.data(), id: order.id});
       })
-      fetchedOrders.map((row:any) => {
+
+      /* fetchedOrders.map((row:any) => {
         row['startdate'] = row.order_start_date.toDate().getDate();
         row['startmonth'] = monthOptions[row.order_start_date.toDate().getMonth()];
         row['startyear'] = row.order_start_date.toDate().getYear();
@@ -116,7 +128,7 @@ const Dashboard = (props: any) => {
         row['createdate'] = row.created_date.toDate().getDate();
         row['createmonth'] = monthOptions[row.created_date.toDate().getMonth()];
         row['createyear'] = row.created_date.toDate().getYear();
-      })
+      }) */
 
       
       console.log(fetchedOrders);
@@ -131,13 +143,28 @@ const Dashboard = (props: any) => {
     console.log(data[0].order_start_date.toDate().getMonth());
     console.log(data[0].order_start_date.toDate().getYear()); */ 
   }
+/********************
+  * SEARCH ORDERS IN FIREBASE
+  * 
+  */
+ const handleSearch = () => {
 
+ }
+ 
   const handleChangeSelect = (data: any) => {
     console.log(data);
   }
   useEffect(() => {
-
   }, [orderData]);
+
+  const handleDateChange = (date: any, id: any) => {
+    console.log(date);
+    setSearchPayLoad({[id]: date});
+  }
+
+  useEffect(() => {
+    console.log(searchPayLoad);
+  }, [searchPayLoad]);
 
   return (
     <div className="main-content">
@@ -226,28 +253,41 @@ const Dashboard = (props: any) => {
               <Filters>
                 <div>
                   <TextField
-                    label=""
+                    label="Customer Name, Location, Phone, Email"
                     id="query"
                     placeholder="Customer Name, Location, Phone, Email"
                     type="text"
                   />
                 </div>
                 <div>
+                  {/* <TextField
+                    label=""
+                    id="query"
+                    placeholder="Date"
+                    type="text"
+                  /> */}
+                 {/*  <DatePicker
+                      id='search_date'
+                      className="form-control"
+                      selected={searchPayLoad.start_date}
+                      onChange={(e:any) => handleDateChange(e)}
+                  />   */}
+                  <TextField
+                      type="daterange"
+                      id="order_date"
+                      label="Order Start Date"
+                      placeholder="Order Date"
+                      onChange={handleDateChange} 
+                  />
+                </div>
+                {/* <div>
                   <TextField
                     label=""
                     id="query"
                     placeholder="Date"
                     type="text"
                   />
-                </div>
-                <div>
-                  <TextField
-                    label=""
-                    id="query"
-                    placeholder="Date"
-                    type="text"
-                  />
-                </div>
+                </div> */}
                 <div>
                   <Selectbox 
                     label="Select Order Status"
@@ -256,12 +296,15 @@ const Dashboard = (props: any) => {
                     selection="single"
                     isRequired="true"
                     onChange={handleChangeSelect}
+                    selectedValues={[]}
                     options={orderOptions} />
                 </div>
                 {/* <div>
                   <Select options={paymentOptions} />
                 </div> */}
-                <div><button className="btn btn-sm btn-primary"><FaSearch /></button></div>
+                <div>
+                  <label></label>
+                  <button className="btn btn-sm btn-primary"><FaSearch /></button></div>
               </Filters>
               <Table>
                 <TableHead>
@@ -292,16 +335,14 @@ const Dashboard = (props: any) => {
                       <TableCell className="txt-14 thick">&#8377;{order.total_amount}</TableCell> 
                       <TableCell className="txt-14 thick">
                         {
-                          order.nature_of_sample.map((sample: any, index: Number) => {
-                            //sample = JSON.parse(sample);
-                            return `${sample.label} ${order.nature_of_sample.length -1 === index? '' : ',' } `;
-                           /*  console.log(JSON.stringify(sample));
-                            console.log(typeof sample); */
+                          order.nature_of_sample.length &&
+                          order.nature_of_sample.map((sample: any, index: Number) => { 
+                            return `${sample.label} ${order.nature_of_sample.length -1 === index? '' : ',' } `; 
                           })
                         }
                         </TableCell> 
-                      <TableCell className="chip green">{order.payment_status[0]}</TableCell>
-                      <TableCell className="chip error">{order.order_status[0]}</TableCell>
+                      <TableCell className="chip green">{order.payment_status[0] ? order.payment_status[0].label: ''}</TableCell>
+                      <TableCell className="chip error">{order.order_status[0] ? order.order_status[0].label: ''}</TableCell>
                       <TableCell>
                         <div className="actions">
                           <button className="btn skyblue"><IoEyeOutline /></button>

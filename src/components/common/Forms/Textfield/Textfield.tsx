@@ -9,18 +9,43 @@ const TextField = ({ label, id, placeholder, type, validators, value, onChange, 
     //STATE
     const [error, setError] = useState();
     const [startDate, setStartDate] = useState(new Date());
-    /* console.log('value => ', value); */
+    const [endDate, setEndDate] = useState(new Date());
+    const [fieldValue, setFieldValue] = useState(value)
+    
     const handleValidation = (e: any) => {
         const { id, value } = e.target;
+        console.log('handleValidation');
+        console.log(value);
+        console.log(validators);
         if (validators) {
             setError(Validator.validateInput(validators, value));
+            setFieldValue(value);
             onChange(e);
         }
+        /* setError(Validator.validateInput(validators, value));
+        onChange(e); */
     }
-    const handleDateChange = (date: any) => {
-        /* console.log(date); */
-        onChange(date);
+    /* useEffect(() => {
+        console.log('value => ', value);
+        if(value) {
+            setFieldValue(value);
+        }
+    }, [fieldValue]) */
+    const handleDateChange = (date: any, id: any) => {
+        console.log(id);
+        onChange(date, id);
         setStartDate(date);
+    }
+    const handleDateRangeChange = (dates: any, id: any) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+        onChange(dates, id); 
+    }
+    const handleTextFieldChange = (e: any) => {
+        console.log(e.target.value);
+        setFieldValue(e.target.value);
+        onChange(e);
     }
     return (
         <>
@@ -30,15 +55,26 @@ const TextField = ({ label, id, placeholder, type, validators, value, onChange, 
                 }
                 {
                     type === 'datex' ?
-                        <div className="container__col-12 flex-row">
+                        <div className="container__col-12 flex-row"> 
                             <DatePicker
-                            id={id}
-                            className="form-control"
-                            selected={startDate}
-                            onChange={handleDateChange}
-                        />
+                                id={id}
+                                className="form-control"
+                                selected={startDate}
+                                onChange={(e:any) => handleDateChange(e, id)}
+                            />  
                         <CiCalendar style={{'position': 'relative', left: '-24px', top: '10px'}}/>
                         </div>:
+                        type === 'daterange' ?
+                            <DatePicker
+                                id={id}
+                                className="form-control"
+                                selected={startDate}
+                                startDate={startDate}
+                                endDate={endDate}
+                                onChange={(e:any) => handleDateRangeChange(e, id)}
+                                selectsRange 
+                            />  
+                        :
                         <input
                             key={label}
                             id={id}
@@ -46,16 +82,12 @@ const TextField = ({ label, id, placeholder, type, validators, value, onChange, 
                             placeholder={placeholder}
                             name={id}
                             className="form-control"
-                            onChange={onChange}
+                            onChange={handleTextFieldChange}
                             onBlur={handleValidation}
-                            defaultValue={value}
-                            value={value}
+                            value={fieldValue}
                             disabled={readonly}
                         />
-                }
-
-
-
+                } 
             </div>
         </>
     )

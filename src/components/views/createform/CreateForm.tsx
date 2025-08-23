@@ -5,7 +5,7 @@ import CardComponent from "../../common/Card/CardComponent";
 import TextField from "../../common/Forms/Textfield/Textfield";
 import { doGet, doPost } from "../../../services/api-working";
 import moment from 'moment';
-import { getFirestore, collection, setDoc, getDocs, where, addDoc, Timestamp, query, orderBy, onSnapshot, doc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, setDoc, getDocs, where, addDoc, Timestamp, query, orderBy, onSnapshot, doc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
 import { db, user } from '../../../Firebase';
 
 
@@ -29,6 +29,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { RxCrossCircled } from "react-icons/rx";
 import { useLocation } from 'react-router-dom';
+import Validator from "../../util/Validator";
+import { FaChevronLeft } from "react-icons/fa";
+
 
 
 /**********************************
@@ -37,7 +40,7 @@ import { useLocation } from 'react-router-dom';
 const samplesLOV = [
   { value: '', label: 'Nature of sample' },
   { value: '1', label: 'Limestone' },
-  { value: '2', label: 'Iron ore' },
+  { value: '2', label: 'Iron Ore' },
   { value: '3', label: 'Bauxite' },
   { value: '4', label: 'Water' }
 ]
@@ -71,13 +74,13 @@ const paymentStatus = [
   { value: '3', label: 'Full Payment' }
 ]
 
-const payLoadObj: any = { orderDate: '', orderStatus: '', customerName: 'Dinesh G', customerPhone: '9885122317', customerEmail: 'dinesh.garimella78@gmail.com', customerLocation: 'Nagole, Hyderabad', natureOfSample: '', typeOfAnalysis: '', chargeableValue: '1500', gst: '230', totalAmount: '1730', paymentMode: '', paymentStatus: '' };
+const payLoadObj: any = { order_start_date: '', order_status: '', customer_name: 'Dinesh G', customer_phone: '9885122317', customer_email: 'dinesh.garimella78@gmail.com', customer_location: 'Nagole, Hyderabad', nature_of_sample: '', type_of_analysis: '', chargeable_value: '1500', gst: '230', total_amount: '1730', payment_mode: '', payment_status: '' };
 
-const requiredFields = ['orderStatus', 'customerName', 'customerPhone', 'customerEmail', 'customerLocation', 'natureOfSample', 'typeOfAnalysis', 'paymentStatus', 'paymentMode']
+const requiredFields = ['order_status', 'customer_name', 'customer_phone', 'customer_email', 'customer_location', 'nature_of_sample', 'type_of_analysis', 'payment_status', 'payment_mode'];
 
 const priceMatrix = [
   { value: '1', label: 'Limestone', basePrice: 100 },
-  { value: '2', label: 'Iron ore', basePrice: 200 },
+  { value: '2', label: 'Iron Ore', basePrice: 200 },
   { value: '3', label: 'Bauxite', basePrice: 300 },
   { value: '4', label: 'Water', basePrice: 400 },
   { value: '5', label: 'lio', basePrice: 10 },
@@ -88,12 +91,15 @@ const priceMatrix = [
   { value: '10', label: 'mgo', basePrice: 60 },
   { value: '11', label: 'potability', basePrice: 70 }
 ]
+
+//let formErrors:any = {};
 /**********************************
   * MAIN COMPONENT
 **********************************/
 const CreateForm = (props: any) => {
   const location = useLocation();
-  const {action, orderDetails} = location.state || {};
+  const {action, orderDetails} = location.state || {action: '', orderDetails: ''}
+  console.log('location.state', location.state);
   console.log('action', action);
   console.log('orderDetails', orderDetails);
   
@@ -103,13 +109,16 @@ const CreateForm = (props: any) => {
   const user_info = sessionStorage.getItem('user_info') ? JSON.parse(sessionStorage.getItem('user_info') || '') : '';
   const [userData, setUserData] = useState([]);
   const [samplesInfo, setSamplesInfo] = useState([{ nature: '', analysis: '' }]);
+  //PROPS FROM withLoader COMPONENT
   const { setLoading } = props;
   //const { patientsData: {mutation: patientData, data}, } = useDashboardApi();
-  const [payLoad, setPayLoad] = useState(payLoadObj);
+  const [payLoad, setPayLoad] = useState(orderDetails);
   const [formErrors, setFormErrors] = useState<any>({});
   const [showPreview, setshowPreview] = useState(false);
   const [apiResponse, setApiResponse] = useState<any>('');
   const [orderNumber, setOrderNumber] = useState<any>('');
+  const [count, setCount] = useState(0);
+  const [pageLabel, setPageLabel] = useState({pageTitle: action === 'edit' ? 'Edit Order': 'Create Order', buttonLabel: action === 'edit' ? 'Save Order': 'Create Order'})
   
   /* const [isFormValid, setIsFormValid] = useState(false) */
 
@@ -118,10 +127,12 @@ const CreateForm = (props: any) => {
   **********************************/
   useEffect(() => {
     todaysDate();
-    console.log('action => ', action);
+   
     if(action) {
       setPayLoad(orderDetails);
     }
+    console.log('action => ', action);
+    console.log('payLoad => ', payLoad);
   }, []);
 
   const todaysDate = () => {
@@ -131,10 +142,16 @@ const CreateForm = (props: any) => {
   /***************************
    * HANDLE TEXTFIELD CHANGE
    ***************************/
-  const handleTextFieldChange = (e: any) => {
+  const handleTextFieldChange = (e: any, id:any) => {
+    console.log('handleTextFieldChange');
     console.log(e);
-    if (e && e.id) {
+    /* console.log(Timestamp.fromDate(e).seconds); */
+    /* console.log(e.toString());  */
+    /* console.log(Timestamp.fromDate(e)); */
+    if (e && e.target && e.target.id) {
       const { id, value } = e.target;
+      console.log(id);
+      console.log(value);
       setPayLoad({ ...payLoad, [id]: value });
       Object.keys(formErrors).filter((key) => {
         if (key === id) delete formErrors[key];
@@ -142,8 +159,9 @@ const CreateForm = (props: any) => {
       });
 
     } else {
-      setPayLoad({ ...payLoad, 'orderDate': e });
-      if (formErrors === 'orderDate') delete formErrors['orderDate'];
+      //setPayLoad({ ...payLoad, 'order_start_date': Timestamp.fromDate(e).seconds});
+      setPayLoad({ ...payLoad, 'order_start_date': e});
+      if (formErrors === 'order_start_date') delete formErrors['order_start_date'];
     } 
     setFormErrors(formErrors); 
   }
@@ -152,11 +170,15 @@ const CreateForm = (props: any) => {
    * HANDLE SELECT CHANGE
    ***************************/
   const handleChangeSelect = (id: any, value: any) => {
+    console.log('id, value')
+    console.log(id)
+    console.log(value)
     setPayLoad({ ...payLoad, [id]: value });
     //checkValidation();
   }
 
   useEffect(() => {
+    console.log('payLoad', payLoad);
   }, [payLoad]);
 
   /***************************
@@ -186,7 +208,12 @@ const CreateForm = (props: any) => {
     //let isFormValid = await
     console.log('check validation');
     //Object.keys(formErrors).length > 0 ? setIsFormValid(false): setIsFormValid(true);
-    return Object.keys(errors).length > 0 ? false : true;
+   //return Object.keys(errors).length > 0 ? false : true;
+   /* formErrors = errors;
+   console.log('formErrors');
+   console.log(formErrors); */
+   return errors;
+
   }
   useEffect(() => {
     console.log("formErrors");
@@ -206,7 +233,7 @@ const CreateForm = (props: any) => {
     let seconds = order_date.getSeconds();
     let order_num = `${year}${getDoubleDigits(month)}${getDoubleDigits(date)}${getDoubleDigits(hours)}${getDoubleDigits(date)}${getDoubleDigits(minutes)}${getDoubleDigits(seconds)}`;
     console.log(order_num);
-    setOrderNumber(order_num);
+    //setOrderNumber(order_num);
     return order_num;
   }
 
@@ -223,13 +250,26 @@ const CreateForm = (props: any) => {
   **********************************/
   const handleSubmitForm = async () => {
     console.log('handleSubmitForm');
-    generateOrderNumber()
-    setApiResponse('success');
-    /* let isFormValid = await checkValidation();
-    console.log('onSubmit', isFormValid)
-    if (isFormValid) {
+    //generateOrderNumber()
+    //setApiResponse('success');
+   let errors = await checkValidation();
+   setCount(100)
+    //setFormErrors(errors);
+   // console.log('onSubmit', isFormValid)
+    /* if (isFormValid) {
       addOrder()
     } */
+   console.log('updated Payload');
+   console.log(payLoad);
+  /*  console.log(action); */
+   if(action === 'edit') {
+      updateOrder()
+   } else {
+    let isFormValid = await checkValidation();
+    if (isFormValid) {
+      addOrder()
+    } 
+   }
   }
   /**********************************
    *  ADD ORDER TO FIREBASE
@@ -242,21 +282,22 @@ const CreateForm = (props: any) => {
     const dbRef = collection(db, 'nrdcs');
     try {
       console.log(payLoad);
+      console.log(payLoad.order_date);
       const docRef = await addDoc(collection(db, 'nrdcs'), {
         order_number: generateOrderNumber(),
-        order_start_date: payLoad.orderDate,
-        order_status: payLoad.orderStatus,
-        customer_name: payLoad.customerName,
-        customer_phone: payLoad.customerPhone,
-        customer_email: payLoad.customerEmail,
-        customer_location: payLoad.customerLocation,
-        nature_of_sample: payLoad.natureOfSample,
-        type_of_analysis: payLoad.typeOfAnalysis,
-        payment_status: payLoad.paymentStatus,
-        payment_mode: payLoad.paymentMode,
-        chargeable_value: payLoad.chargeableValue,
+        order_start_date: payLoad.order_start_date,
+        order_status: payLoad.order_status,
+        customer_name: payLoad.customer_name,
+        customer_phone: payLoad.customer_phone,
+        customer_email: payLoad.customer_email,
+        customer_location: payLoad.customer_location,
+        nature_of_sample: payLoad.nature_of_sample,
+        type_of_analysis: payLoad.type_of_analysis,
+        payment_status: payLoad.payment_status,
+        payment_mode: payLoad.payment_mode,
+        chargeable_value: payLoad.chargeable_value,
         gst: payLoad.gst,
-        total_amount: payLoad.totalAmount,
+        total_amount: payLoad.total_amount,
         order_completed_date: '',
         created_by: 1,
         created_date: serverTimestamp(),
@@ -276,14 +317,77 @@ const CreateForm = (props: any) => {
       console.log(error);
     }
   }
+
+  /**********************************
+   *  UPDATE EXISTING ORDER IN FIREBASE
+  **********************************/
+  /****** FIREBASE: DOCUMENT UPDATE  */
+  const updateOrder = async () => {
+    console.log('INTO UPDATE');
+    setLoading(true);
+     
+   /*  console.log(payLoad.id);
+    console.log('Firebase Timestamp');
+    console.log(payLoad.order_start_date);
+    console.log('Timestamp conversion');
+    const timeStamp = payLoad.order_start_date.seconds;
+    const fetchedDate = new Date(timeStamp);
+    console.log(fetchedDate) */
+   // console.log(new Date(payLoad.order_start_date))
+   // console.log(Timestamp.fromDate(payLoad.order_start_date));
+   //  console.log(Timestamp.fromMillis(1749570650).toDate());
+     
+    /* console.log(Timestamp.fromDate(payLoad.order_start_date)); */
+     
+
+    //const dbRef = collection(db, 'nrdcs');
+    try {
+      console.log(payLoad);
+      const docRef = doc(db, 'nrdcs', payLoad.id);
+      await updateDoc(docRef, {
+        order_number: payLoad.order_number,
+        order_start_date: payLoad.order_start_date, //payLoad.order_start_date,
+        order_status: payLoad.order_status,
+        customer_name: payLoad.customer_name,
+        customer_phone: payLoad.customer_phone,
+        customer_email: payLoad.customer_email,
+        customer_location: payLoad.customer_location,
+        nature_of_sample: payLoad.nature_of_sample,
+        type_of_analysis: payLoad.type_of_analysis,
+        payment_status: payLoad.payment_status,
+        payment_mode: payLoad.payment_mode,
+        chargeable_value: payLoad.chargeable_value,
+        gst: payLoad.gst,
+        total_amount: payLoad.total_amount,
+        order_completed_date: payLoad.order_completed_date,
+        created_by: 1,
+        created_date: payLoad.created_date,
+        modified_date: serverTimestamp()
+        //order_start_date: serverTimestamp(),//Timestamp.fromDate(new Date()),
+      });
+      console.log('docRef');
+      console.log(docRef);
+      const docSnap = await getDoc(docRef);
+      console.log(docSnap.exists());  
+      /* docRef.then((doc) => {
+        console.log(doc)
+      }) */
+      setLoading(false);
+    } catch (error) {
+     // setLoading(false);
+      console.log(error);
+    }
+  }
+
   return (
     <div className="main-content">
+      
       <div className="page-wrap">
         <div className="page-title">
           <div className="container">
             <div className="container__row">
               <div className="container__col-6 flex-column m-r-10">
-                <p className="txt-18 thick">Create an Order</p>
+                <p className="txt-18 thick"><Link to="/dashboard"><FaChevronLeft /></Link> {pageLabel.pageTitle}</p>
                 {/* <span className="txt-13 normal">Lorem ipsum iset dule.</span> */}
               </div>
             </div>
@@ -325,7 +429,7 @@ const CreateForm = (props: any) => {
                       <p className="form-section-title">Order Information</p>
                     </div>
                     <div className="container__col-12 gap-10">
-                      <div className={formErrors['customerName'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['customer_name'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                         {/* <TextField
                         type="date"
                         id="todayDate"
@@ -344,17 +448,17 @@ const CreateForm = (props: any) => {
                         /> */}
                           <TextField
                             type="datex"
-                            id="orderDate"
+                            id="order_date"
                             label="Order Date"
                             placeholder="Order Date"
                             onChange={handleTextFieldChange}
                           />
                         </div>
                       </div>
-                      <div className={formErrors['orderStatus'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['order_status'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                         <Selectbox
                           label="Order Status"
-                          id="orderStatus"
+                          id="order_status"
                           placeholder="Order Status"
                           selection="single"
                           isRequired="true"
@@ -371,20 +475,23 @@ const CreateForm = (props: any) => {
                         <p className="form-section-title">Customer Information</p>
                       </div>
                       <div className="container__col-12 gap-10">
-                        <div className={formErrors['customerName'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                        <div className={formErrors['customer_name'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                           <TextField
                             type="text"
-                            id="customerName"
+                            id="customer_name"
                             label="Customer Name"
                             placeholder="Customer Name"
                             value={payLoad.customer_name || ''}
+                            validators={
+                              [{ check: Validator.required, message: 'This field is required.' }]
+                          }
                             onChange={handleTextFieldChange}
                           />
                         </div>
-                        <div className={formErrors['customerPhone'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                        <div className={formErrors['customer_phone'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                           <TextField
                             type="text"
-                            id="customerPhone"
+                            id="customer_phone"
                             label="Customer Phone"
                             placeholder="Customer Phone"
                             value={payLoad.customer_phone || ''}
@@ -393,20 +500,20 @@ const CreateForm = (props: any) => {
                         </div>
                       </div>
                       <div className="container__col-12  gap-10">
-                        <div className={formErrors['customerEmail'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6 m-b-20'}>
+                        <div className={formErrors['customer_email'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6 m-b-20'}>
                           <TextField
                             type="text"
-                            id="customerEmail"
+                            id="customer_email"
                             label="Customer Email"
                             placeholder="Customer Email"
                             value={payLoad.customer_email || ''}
                             onChange={handleTextFieldChange}
                           />
                         </div>
-                        <div className={formErrors['customerLocation'] === '' ? 'container__col-6 m-b-20 form-error' : 'container__col-6 m-b-20'}>
+                        <div className={formErrors['customer_location'] === '' ? 'container__col-6 m-b-20 form-error' : 'container__col-6 m-b-20'}>
                           <TextField
                             type="text"
-                            id="customerLocation"
+                            id="customer_location"
                             label="Customer Location"
                             placeholder="Customer Location"
                             value={payLoad.customer_location || ''}
@@ -425,28 +532,28 @@ const CreateForm = (props: any) => {
                       <p className="form-section-title">Samples Information</p>
                     </div>
                     <div className="container__col-12 gap-10">
-                      <div className={formErrors['natureOfSample'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}> 
+                      <div className={formErrors['nature_of_sample'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}> 
                         <Selectbox
                           label="Nature of the sample"
-                          id="natureOfSample"
+                          id="nature_of_sample"
                           placeholder="Nature of the sample"
                           selection="multi"
                           isRequired="true"
                           onChange={handleChangeSelect}
-                          selectedValues={payLoad.nature_of_sample || []}
+                          selectedValues={orderDetails.nature_of_sample || []}
                           options={samplesLOV} />
                       </div>
-                      <div className={formErrors['typeOfAnalysis'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['typeo_of_analysis'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
 
-                        {/* <Selectbox
+                        <Selectbox
                           label="Type of Analysis"
-                          id="typeOfAnalysis"
+                          id="type_of_analysis"
                           placeholder="Type of Analysis"
                           selection="multi"
                           isRequired="true"
                           onChange={handleChangeSelect}
                           selectedValues={payLoad.type_of_analysis || []}
-                          options={analysisLOV} /> */}
+                          options={analysisLOV} />
                       </div>
                     </div>
                   </div>
@@ -458,10 +565,10 @@ const CreateForm = (props: any) => {
                       <p className="form-section-title">Payment Information</p>
                     </div>
                     <div className="container__col-12 gap-10">
-                      <div className={formErrors['paymentStatus'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['payment_status'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                         <Selectbox
                           label="Payment Status"
-                          id="paymentStatus"
+                          id="payment_status"
                           placeholder="Payment Status"
                           selection="single"
                           isRequired="true"
@@ -469,14 +576,14 @@ const CreateForm = (props: any) => {
                           selectedValues={payLoad.payment_status || []}
                           options={paymentStatus} />
                       </div>
-                      <div className={formErrors['paymentMode'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['payment_mode'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
 
                         {
-                          (payLoad.paymentStatus && !payLoad.paymentStatus.includes('No Payment')) &&
+                          /* (payLoad.payment_mode && !payLoad.payment_mode.includes('No Payment')) && */
                           <Selectbox
                             label="Payment Mode"
-                            id="paymentMode"
-                            placeholder="paymentMode"
+                            id="payment_mode"
+                            placeholder="Payment Mode"
                             selection="mutiple"
                             isRequired="true"
                             selectedValues={payLoad.payment_mode || []}
@@ -487,25 +594,34 @@ const CreateForm = (props: any) => {
                       </div>
                     </div>
                     <div className="container__col-12 gap-10">
-                      <div className={formErrors['natureOfSample'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['nature_of_sample'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                         <TextField
                           label="Chargeable value"
-                          id="chargeableValue"
-                          placeholder="Chargeable value" />
+                          id="chargeable_value"
+                          placeholder="Chargeable value" 
+                          value={payLoad.chargeable_value || ''}
+                          onChange={handleTextFieldChange}
+                        />
                       </div>
                       <div className={formErrors['gst'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                         <TextField
                           label="GST"
                           id="gst"
-                          placeholder="GST" />
+                          placeholder="GST" 
+                          value={payLoad.gst || ''}
+                          onChange={handleTextFieldChange}
+                          />
                       </div>
                     </div>
                     <div className="container__col-12 gap-10">
-                      <div className={formErrors['totalAmount'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
+                      <div className={formErrors['total_amount'] === '' ? 'container__col-6  m-b-20 form-error' : 'container__col-6  m-b-20'}>
                         <TextField
                           label="Total Amount (CV + GST)"
-                          id="totalAmount"
-                          placeholder="Total Amount" />
+                          id="total_amount"
+                          placeholder="Total Amount"
+                          value={payLoad.total_amount || ''}
+                          onChange={handleTextFieldChange}
+                        />
                       </div>
                     </div>
                   </div>
@@ -519,7 +635,7 @@ const CreateForm = (props: any) => {
                   <div className="container__col-6">
                     <button className="btn btn-block btn-lg btn-primary" onClick={handleSubmitForm}>Create Order</button>
                   </div> */}
-                    <button className="btn btn-block btn-lg btn-primary" onClick={handleSubmitForm}>Create Order</button>
+                    <button className="btn btn-block btn-lg btn-primary" onClick={handleSubmitForm}>{pageLabel.buttonLabel}</button>
                   </div>
                 </div>
 
