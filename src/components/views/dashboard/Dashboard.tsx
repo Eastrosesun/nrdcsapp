@@ -99,18 +99,7 @@ const Dashboard = (props: any) => {
    * 
    */
   const getOrdersFromFirebase = async () => {
-    /* const q = query(collection(db, 'nrdcs'));
-    const docRef = doc(db, "nrdcs");
-    console.log(docRef); */
-    /* let data = q.snapshotChanges().map(() => {
-
-    }) */
-    /* const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-    let data = querySnapshot.docs.map((doc) => (
-      doc.data()
-    )); */
-    //const ordersRef = db.collection('nrdcs');
+   
     const q = query(collection(db, 'nrdcs'));
     const fetchedOrders:any = [];
     const orders = onSnapshot(q, (QuerySnapshot) => {
@@ -147,10 +136,35 @@ const Dashboard = (props: any) => {
   * SEARCH ORDERS IN FIREBASE
   * 
   */
- const handleSearch = () => {
+ const handleSearch = async () => {
+  
+  //const ordersRef = db.collection('nrdcs');
+  const ordersRef = collection(db, "nrdcs");
+  const queryFireStore =  query(ordersRef, where("customer_name", ">=", 'Dinesh'), where("customer_name", "<=", '~'));
 
- }
+  /*
+    .where("dbField1", ">=", searchString)
+    .where("dbField1", "<=", searchString + "\uf8ff");
+  */
  
+  console.log('queryFireStore');
+  console.log(queryFireStore);
+  
+
+  const querySnapshot = await getDocs(queryFireStore);
+  console.log(querySnapshot)
+  querySnapshot.forEach((doc) => {
+    //console.log(`${doc.id} => ${doc.data()}`);
+    console.log(doc.data())
+  });
+  //const snapshot = await q.where('capital', '==', true).get();
+  //const fetchedOrders:any = [];
+ /*  snapshot.forEach(doc => {
+    console.log(doc.id, '=>', doc.data())
+  }) */
+ 
+ }
+
   const handleChangeSelect = (data: any) => {
     console.log(data);
   }
@@ -304,7 +318,7 @@ const Dashboard = (props: any) => {
                 </div> */}
                 <div>
                   <label></label>
-                  <button className="btn btn-sm btn-primary"><FaSearch /></button></div>
+                  <button className="btn btn-sm btn-primary" onClick={handleSearch}><FaSearch /></button></div>
               </Filters>
               <Table>
                 <TableHead>
