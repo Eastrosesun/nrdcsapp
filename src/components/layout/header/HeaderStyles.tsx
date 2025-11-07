@@ -9,7 +9,8 @@ export const Header = styled.div`
     justify-content: space-between;
     align-items: center; 
     width: 100%; 
-    background: -webkit-linear-gradient(120deg, #1cdcd9 0%, #1c8180 100%);
+    /* background: -webkit-linear-gradient(120deg, #1cdcd9 0%, #1c8180 100%); */
+    background:rgb(16, 159, 140);
     margin: 0 auto;
     /* padding: 0  40px; */ 
     z-index:100; 
@@ -21,7 +22,7 @@ export const HeaderWrapper = styled.div`
     border-bottom: 0 solid #dfdfdf;
     justify-content: space-between;
     align-items: center;
-    width: 1134px;  
+    width: 100%;  
     margin: 0 auto;
     padding: 0  40px; 
     z-index:100; 

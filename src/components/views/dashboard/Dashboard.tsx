@@ -264,7 +264,7 @@ const Dashboard = (props: any) => {
                       columns={columns}
                     ></TableGrid> 
               */}
-              <Filters>
+              <Filters style={{display: 'none'}}>
                 <div>
                   <TextField
                     label="Customer Name, Location, Phone, Email"

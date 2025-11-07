@@ -200,6 +200,7 @@ export const Table = styled.div`
     border-top: 0;
     background: #fff; 
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: 0 1px 2px rgba(56, 65, 74, 0.15);
 `;
 
 export const TableHead = styled.div`
