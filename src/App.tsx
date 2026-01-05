@@ -8,16 +8,24 @@ import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./components/routing/AppRoutes";
 import isUserLoggedIn from "./components/util/util";
 
+//REDUX IMPORTS
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+
+/* export const store = configureStore({
+  reducer:{
+
+  }
+}) */
 const App = () => {
   const [userLoggedIn, setUserLoggedIn] = useState(isUserLoggedIn());
   useEffect(() => {
      
   }, [userLoggedIn]);
 
-  /* const doCall = () => {
-    doPost();
-  } */
   return (
+    <Provider store={store}>
     <BrowserRouter>
     {
       userLoggedIn &&
@@ -28,6 +36,7 @@ const App = () => {
     } 
       <AppRouter />
       </BrowserRouter>
+      </Provider>
    );
 };
 

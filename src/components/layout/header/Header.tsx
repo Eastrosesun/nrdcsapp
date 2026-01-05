@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Header, Logo, HeaderMenu, UserNameSpan, HeaderTitle, HeaderMenuItem, HeaderWrapper } from "./HeaderStyles";
+import { Header, Logo, HeaderMenu, UserNameSpan, HeaderTitle, HeaderMenuItem, HeaderWrapper, HeaderSubMenu, HeaderRow } from "./HeaderStyles";
 import { BiUserPin } from "react-icons/bi";
 import { CiBoxList, CiPower } from "react-icons/ci";
 import { MdOutlinePlaylistAddCheck } from "react-icons/md";
@@ -13,35 +13,33 @@ const AppHeader = () => {
   return (
     <Header>
       <HeaderWrapper>
-      <Logo><Link to='/dashboard'><img src={nrdcslogo} /></Link></Logo>
-      <HeaderTitle>National Resources Development Co-operative Society Ltd.</HeaderTitle>
-      <HeaderMenu>
-       {/*  <Link to={`/dashboard`}>
-          <HeaderMenuItem>
-            <MdOutlinePlaylistAddCheck></MdOutlinePlaylistAddCheck>
-            <span className="bubble">45</span>
-          </HeaderMenuItem>
-        </Link>
-        <Link to={`/dashboard`}>
-          <HeaderMenuItem>
-            <HiOutlineChatBubbleLeftRight></HiOutlineChatBubbleLeftRight>
-            <span className="bubble">45</span>
-          </HeaderMenuItem>
-        </Link> */}
-
-        <Link to={`/dashboard`}>
-          <HeaderMenuItem>
-            <RiUser3Line></RiUser3Line> 
-          </HeaderMenuItem>
-        </Link>
-        <Link to={`/login`}>
-          <HeaderMenuItem>
-          <CiPower></CiPower>
-          </HeaderMenuItem>
-        </Link>
-        
-        {/* <UserNameSpan>John Doe</UserNameSpan> */}
-      </HeaderMenu>
+        <HeaderRow>
+          <Logo>
+            <Link to='/dashboard'><img src={nrdcslogo} /></Link>
+            <span>NRDCS</span>
+          </Logo>
+          <HeaderMenu>
+          <Link to={`/dashboard`}>
+            <HeaderMenuItem>
+              <RiUser3Line></RiUser3Line>
+            </HeaderMenuItem>
+          </Link>
+          <Link to={`/login`}>
+            <HeaderMenuItem>
+              <CiPower></CiPower>
+            </HeaderMenuItem>
+          </Link>
+        </HeaderMenu>
+        </HeaderRow>
+        <HeaderRow>
+          <HeaderSubMenu>
+            <ul>
+              <li><Link to="/">Dashboard</Link></li>
+              <li><Link to="/">Reports</Link></li>
+              <li><Link to="/">Advanced Search</Link></li>
+            </ul>
+          </HeaderSubMenu>
+        </HeaderRow>
       </HeaderWrapper>
     </Header>
   )

@@ -196,11 +196,11 @@ export const Table = styled.div`
     display: flex;
     flex: 1 0 0;
     flex-direction: column;
-    border: 1px solid #ddd;
+    border: 0px solid #ddd;
     border-top: 0;
     background: #fff; 
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    box-shadow: 0 1px 2px rgba(56, 65, 74, 0.15);
+    /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: 0 1px 2px rgba(56, 65, 74, 0.15); */
 `;
 
 export const TableHead = styled.div`
@@ -330,13 +330,17 @@ export const TableCell = styled.div`
 `;
 
 export const Filters = styled.div`
+
     position: relative;
     top: 1px;
     gap:10px;
     padding: 10px;
     font-size: 12px;
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr 0.8fr 1fr 0.5fr 0.2fr;
-    background: #f2f2f2;
-    border: 1px solid #ddd;
+    display: flex;
+    display:none;
+    grid-template-columns: 1fr 1fr 0.5fr ;
+    background: #f9fbfc;
+    /* grid-template-columns: 1.2fr 0.8fr 0.8fr 1fr 0.5fr 0.2fr; */
+    /* ;
+    border: 1px solid #ddd; */
 ` 

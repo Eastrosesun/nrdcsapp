@@ -3,7 +3,7 @@ import { Header, Logo, HeaderMenu, UserNameSpan, Stats, Chip, AppointmentInfo, A
 import CardComponent from "../../common/Card/CardComponent";
 import TextField from "../../common/Forms/Textfield/Textfield";
 import { doGet, doPost } from "../../../services/api-working";
-import { collection, getDocs, where, addDoc, Timestamp, query, orderBy, onSnapshot, setDoc, doc, QuerySnapshot } from 'firebase/firestore'; 
+import { collection, getDocs, where, addDoc, Timestamp, query, orderBy, onSnapshot, setDoc, doc, QuerySnapshot } from 'firebase/firestore';
 import { db, user } from '../../../Firebase';
 
 
@@ -12,7 +12,7 @@ import { TfiReload } from "react-icons/tfi";
 import { BiHistory } from "react-icons/bi";
 import { BiFilter } from "react-icons/bi";
 import { LuStethoscope } from "react-icons/lu";
-import { MdNotes } from "react-icons/md";
+import { MdNotes, MdOutlineNotes } from "react-icons/md";
 import { IoEyeOutline, IoPencil } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
@@ -57,11 +57,11 @@ const paymentOptions = [
   { value: '3', label: 'Full Due' }
 ]
 
-const monthOptions:any = [
+const monthOptions: any = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ]
 
-const searchPayLoadObj:any = { start_date: ''}
+const searchPayLoadObj: any = { start_date: '' }
 
 const Dashboard = (props: any) => {
 
@@ -75,14 +75,24 @@ const Dashboard = (props: any) => {
   const { setLoading } = props;
 
   const [searchPayLoad, setSearchPayLoad] = useState(searchPayLoadObj);
+  const [faker, setFaker] = useState(false)
 
   //const { patientsData: {mutation: patientData, data}, } = useDashboardApi();
+
 
   useEffect(() => {
     // getUsers();
     getOrdersFromFirebase();
+    handleSearch()
   }, []);
 
+  useEffect(() => {
+    console.log('ding dong');
+    fakeCall();
+  }, [faker])
+  const fakeCall = () => {
+    console.log('Fake call invoked')
+  }
   const getUsers = () => {
     doGet('users').then((res: any) => {
       if (res.success) {
@@ -99,15 +109,16 @@ const Dashboard = (props: any) => {
    * 
    */
   const getOrdersFromFirebase = async () => {
-   
+
     const q = query(collection(db, 'nrdcs'));
-    const fetchedOrders:any = [];
+    const fetchedOrders: any = [];
     const orders = onSnapshot(q, (QuerySnapshot) => {
       console.log('orders snapshot');
       console.log(QuerySnapshot);
       QuerySnapshot.forEach((order) => {
-        return fetchedOrders.push({...order.data(), id: order.id});
+        return fetchedOrders.push({ ...order.data(), id: order.id });
       })
+      setFaker(!faker);
 
       /* fetchedOrders.map((row:any) => {
         row['startdate'] = row.order_start_date.toDate().getDate();
@@ -119,51 +130,51 @@ const Dashboard = (props: any) => {
         row['createyear'] = row.created_date.toDate().getYear();
       }) */
 
-      
+
       console.log(fetchedOrders);
       setOrderData(fetchedOrders);
     });
-    
+
     console.log('orders');
-    console.log(orders); 
-    
+    console.log(orders);
+
     /* console.log(data[0].order_start_date.toDate().toLocaleString());
     console.log(data[0].order_start_date.toDate().getDate());
     console.log(data[0].order_start_date.toDate().getMonth());
-    console.log(data[0].order_start_date.toDate().getYear()); */ 
+    console.log(data[0].order_start_date.toDate().getYear()); */
   }
-/********************
-  * SEARCH ORDERS IN FIREBASE
-  * 
-  */
- const handleSearch = async () => {
-  
-  //const ordersRef = db.collection('nrdcs');
-  const ordersRef = collection(db, "nrdcs");
-  const queryFireStore =  query(ordersRef, where("customer_name", ">=", 'Dinesh'), where("customer_name", "<=", '~'));
+  /********************
+    * SEARCH ORDERS IN FIREBASE
+    * 
+    */
+  const handleSearch = async () => {
+    console.log('handleSearch')
+    //const ordersRef = db.collection('nrdcs');
+    const ordersRef = collection(db, "nrdcs");
+    const queryFireStore = query(ordersRef, where("customer_name", ">=", 'Dinesh'), where("customer_name", "<=", '~'));
 
-  /*
-    .where("dbField1", ">=", searchString)
-    .where("dbField1", "<=", searchString + "\uf8ff");
-  */
- 
-  console.log('queryFireStore');
-  console.log(queryFireStore);
-  
+    /*
+      .where("dbField1", ">=", searchString)
+      .where("dbField1", "<=", searchString + "\uf8ff");
+    */
 
-  const querySnapshot = await getDocs(queryFireStore);
-  console.log(querySnapshot)
-  querySnapshot.forEach((doc) => {
-    //console.log(`${doc.id} => ${doc.data()}`);
-    console.log(doc.data())
-  });
-  //const snapshot = await q.where('capital', '==', true).get();
-  //const fetchedOrders:any = [];
- /*  snapshot.forEach(doc => {
-    console.log(doc.id, '=>', doc.data())
-  }) */
- 
- }
+    console.log('queryFireStore');
+    console.log(queryFireStore);
+
+
+    const querySnapshot = await getDocs(queryFireStore);
+    console.log(querySnapshot)
+    querySnapshot.forEach((doc) => {
+      //console.log(`${doc.id} => ${doc.data()}`);
+      console.log(doc.data())
+    });
+    //const snapshot = await q.where('capital', '==', true).get();
+    //const fetchedOrders:any = [];
+    /*  snapshot.forEach(doc => {
+       console.log(doc.id, '=>', doc.data())
+     }) */
+
+  }
 
   const handleChangeSelect = (data: any) => {
     console.log(data);
@@ -173,7 +184,7 @@ const Dashboard = (props: any) => {
 
   const handleDateChange = (date: any, id: any) => {
     console.log(date);
-    setSearchPayLoad({[id]: date});
+    setSearchPayLoad({ [id]: date });
   }
 
   useEffect(() => {
@@ -183,18 +194,98 @@ const Dashboard = (props: any) => {
   return (
     <div className="main-content">
       <div className="page-wrap">
+        <div className="container">
+          <div className="container__row maxis-space-around">
+            <div className="container__col-3">
+              <div className="card card-animate">
+                <div className="card-content">
+                  <div className="container__row">
+                    <div className="container__col-6 flex-column">
+                      <span className="txt-12 normal">IN-PROGRESS ORDERS</span>
+                      <span className="txt-24 thick">56</span>
+                    </div>
+                    <div className="container__col-6 justify-end">
+                      <span className="card-icon teal">
+                        <span className=" txt-20 normal">
+                          <IoEyeOutline />
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="container__col-3">
+              <div className="card card-animate">
+                <div className="card-content">
+                  <div className="container__row">
+                    <div className="container__col-6 flex-column">
+                      <span className="txt-12 normal">IN-PROGRESS ORDERS</span>
+                      <span className="txt-24 thick">110</span>
+                    </div>
+                    <div className="container__col-6 justify-end">
+                      <span className="card-icon duskorange">
+                        <span className=" txt-20 normal">
+                          <IoEyeOutline />
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="container__col-3">
+              <div className="card card-animate">
+                <div className="card-content">
+                  <div className="container__row">
+                    <div className="container__col-6 flex-column">
+                      <span className="txt-12 normal">IN-PROGRESS ORDERS</span>
+                      <span className="txt-24 thick">110</span>
+                    </div>
+                    <div className="container__col-6 justify-end">
+                      <span className="card-icon pastelblue">
+                        <span className=" txt-20 normal">
+                          <IoEyeOutline />
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="container__col-3">
+              <div className="card card-animate">
+                <div className="card-content">
+                  <div className="container__row">
+                    <div className="container__col-6 flex-column">
+                      <span className="txt-12 normal">IN-PROGRESS ORDERS</span>
+                      <span className="txt-24 thick">110</span>
+                    </div>
+                    <div className="container__col-6 justify-end">
+                      <span className="card-icon lilac">
+                        <span className=" txt-20 normal">
+                          <IoEyeOutline />
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><br />
         <div className="page-title">
           <div className="container">
             <div className="container__row">
-              <div className="container__col-6 flex-column   m-r-10">
-                {/* <p className="txt-18 thick">Good Afternoon</p>
+              {/* <div className="container__col-6 flex-column   m-r-10">
+                <p className="txt-18 thick">Good Afternoon</p>
                 {
                   <span className="txt-20 thickest">{user_info.first_name}</span>
-                } */}
-                <span className="txt-20 thick">Dashboard</span>
-              </div>
+                }
+                <span className="txt-20 nromal">Dashboard</span>
+              </div> */}
               <div className="container__col-6 justify-end">
-                <Link to="/createform" className="btn btn-sm btn-primary">Create a new record</Link>
+                {/* <Link to="/createform" className="btn btn-sm btn-primary">Create a new record</Link> */}
                 {/* <div className="container__row">
                   <div className="container__col-12  gap-10 maxis-space-between">
                     <div className="container__col-3">
@@ -258,43 +349,42 @@ const Dashboard = (props: any) => {
         </div>
         <div className="container">
           <div className="container__row">
-            <div className="container__col-12  flex-column maxis-space-between">
-              {/*  <TableGrid
-                      data={orderData}
-                      columns={columns}
-                    ></TableGrid> 
-              */}
-              <Filters style={{display: 'none'}}>
-                <div>
+            <div className="container__col-12  flex-column maxis-space-between"
+              style={{ border: "1px solid #dcdcdc", borderRadius: '8px', background: "#fff" }}
+            >
+
+              <Filters className="maxis-space-between">
+                <div className="container__col-8">
+                  {/* <div>
                   <TextField
                     label="Customer Name, Location, Phone, Email"
                     id="query"
                     placeholder="Customer Name, Location, Phone, Email"
                     type="text"
                   />
-                </div>
-                <div>
-                  {/* <TextField
+                </div> */}
+                  <div>
+                    {/* <TextField
                     label=""
                     id="query"
                     placeholder="Date"
                     type="text"
                   /> */}
-                 {/*  <DatePicker
+                    {/*  <DatePicker
                       id='search_date'
                       className="form-control"
                       selected={searchPayLoad.start_date}
                       onChange={(e:any) => handleDateChange(e)}
                   />   */}
-                  <TextField
+                    <TextField
                       type="daterange"
                       id="order_date"
                       label="Order Start Date"
                       placeholder="Order Date"
-                      onChange={handleDateChange} 
-                  />
-                </div>
-                {/* <div>
+                      onChange={handleDateChange}
+                    />
+                  </div>
+                  {/* <div>
                   <TextField
                     label=""
                     id="query"
@@ -302,23 +392,24 @@ const Dashboard = (props: any) => {
                     type="text"
                   />
                 </div> */}
-                <div>
-                  <Selectbox 
-                    label="Select Order Status"
-                    id="orderStatus"
-                    placeholder="Select Order Status"
-                    selection="single"
-                    isRequired="true"
-                    onChange={handleChangeSelect}
-                    selectedValues={[]}
-                    options={orderOptions} />
-                </div>
-                {/* <div>
+                  <div>
+                    <Selectbox
+                      label="Select Order Status"
+                      id="orderStatus"
+                      placeholder="Select Order Status"
+                      selection="single"
+                      isRequired="true"
+                      onChange={handleChangeSelect}
+                      selectedValues={[]}
+                      options={orderOptions} />
+                  </div>
+                  {/* <div>
                   <Select options={paymentOptions} />
                 </div> */}
-                <div>
-                  <label></label>
-                  <button className="btn btn-sm btn-primary" onClick={handleSearch}><FaSearch /></button></div>
+                  <div>
+                    <label>&nbsp;</label>
+                    <button className="btn btn-md btn-primary" onClick={handleSearch}><FaSearch /></button></div>
+                </div>
               </Filters>
               <Table>
                 <TableHead>
@@ -328,48 +419,48 @@ const Dashboard = (props: any) => {
                   <TableCell>ORDER AMOUNT</TableCell>
                   <TableCell>ORDER SAMPLES</TableCell>
                   <TableCell>PAYMENT STATUS</TableCell>
-                  <TableCell>ORDER STATUS</TableCell> 
+                  <TableCell>ORDER STATUS</TableCell>
                   <TableCell>ACTIONS</TableCell>
                 </TableHead>
                 {
-                  orderData.map((order:any)=> {
+                  orderData.map((order: any) => {
                     return <div key={order.order_number}>
-                    <TableRow >
-                      <TableCell>{order.order_number.slice(order.order_number.length-4, order.order_number)}</TableCell>
-                      <TableCell>
-                        <p className="date">
-                          <span className="month">{order.startmonth}</span>
-                          <span className="day">{order.startdate}</span>
-                        </p>
-                      </TableCell>
-                      <TableCell>
-                        <p className="txt-14 thick">{order.customer_name}</p>
-                        <p className="txt-12 mid-grey">{order.customer_phone}</p>
-                      </TableCell>
-                      <TableCell className="txt-14 thick">&#8377;{order.total_amount}</TableCell> 
-                      <TableCell className="txt-14 thick">
-                        {
-                          order.nature_of_sample.length &&
-                          order.nature_of_sample.map((sample: any, index: Number) => { 
-                            return `${sample.label} ${order.nature_of_sample.length -1 === index? '' : ',' } `; 
-                          })
-                        }
-                        </TableCell> 
-                      <TableCell className="chip green">{order.payment_status[0] ? order.payment_status[0].label: ''}</TableCell>
-                      <TableCell className="chip error">{order.order_status[0] ? order.order_status[0].label: ''}</TableCell>
-                      <TableCell>
-                        <div className="actions">
-                          <button className="btn skyblue"><IoEyeOutline /></button>
-                          <Link to='/createform' state={{ action: 'edit', orderDetails: order }} className="btn lightgreen"><RiPencilLine /></Link>
-                          <button className="btn lightred"><RiDeleteBin6Line /></button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                      <TableRow >
+                        <TableCell>{order.order_number.slice(order.order_number.length - 4, order.order_number)}</TableCell>
+                        <TableCell>
+                          <p className="date">
+                            <span className="month">{order.startmonth}</span>
+                            <span className="day">{order.startdate}</span>
+                          </p>
+                        </TableCell>
+                        <TableCell>
+                          <p className="txt-14 thick">{order.customer_name}</p>
+                          <p className="txt-12 mid-grey">{order.customer_phone}</p>
+                        </TableCell>
+                        <TableCell className="txt-14 thick">&#8377;{order.total_amount}</TableCell>
+                        <TableCell className="txt-14 thick">
+                          {
+                            order.nature_of_sample.length &&
+                            order.nature_of_sample.map((sample: any, index: Number) => {
+                              return `${sample.label} ${order.nature_of_sample.length - 1 === index ? '' : ','} `;
+                            })
+                          }
+                        </TableCell>
+                        <TableCell className="chip green">{order.payment_status[0] ? order.payment_status[0].label : ''}</TableCell>
+                        <TableCell className="chip error">{order.order_status[0] ? order.order_status[0].label : ''}</TableCell>
+                        <TableCell>
+                          <div className="actions">
+                            <button className="btn skyblue"><IoEyeOutline /></button>
+                            <Link to='/createform' state={{ action: 'edit', orderDetails: order }} className="btn lightgreen"><RiPencilLine /></Link>
+                            <button className="btn lightred"><RiDeleteBin6Line /></button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
                     </div>
-                  }) 
-                
+                  })
+
                 }
-                
+
 
                 {/* <TableRow>
                   <TableCell>9214</TableCell>
