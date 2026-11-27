@@ -110,11 +110,11 @@ SESSION_VALIDITY = 180000
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("PGDATABASE", "railway"),
-        "USER": os.environ.get("PGUSER", "postgres"),
+        "NAME": "railway",
+        "USER": "postgres",
         "PASSWORD": os.environ.get("PGPASSWORD", ""),
-        "HOST": os.environ.get("PGHOST", "localhost"),
-        "PORT": os.environ.get("PGPORT", "5432"),
+        "HOST": "nrdcs-db.railway.internal",
+        "PORT": "5432",
     }
 }
 
