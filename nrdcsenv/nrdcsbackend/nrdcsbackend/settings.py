@@ -114,7 +114,7 @@ DATABASES = {
         "USER": "postgres",
         "PASSWORD": os.environ.get("PGPASSWORD", ""),
         "HOST": "zephyr.proxy.rlwy.net",
-        "PORT": "5432",
+        "PORT": "18035",
     }
 }
 
