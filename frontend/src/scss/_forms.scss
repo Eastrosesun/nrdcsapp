@@ -1,0 +1,213 @@
+@use "colors";
+@use "variables";
+.form-section-title {
+    margin: 0 0 16px 0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.form-control {
+    font-family: variables.$primary-font;
+    font-weight: 500;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #aeaeae;
+    width: 100%;
+    display: block;
+    padding: 14px 10px;
+    box-sizing: border-box;
+    box-shadow: 1px 1px 2px #dfdfdf;
+}
+.sm {
+    font-size: 12px;
+    padding: 10px 10px;
+}
+.md {
+    font-size: 14px;
+    padding: 14px 10px;
+}
+.lg {
+    font-size: 16px;
+    padding: 16px 10px;
+}
+.form-control:focus {
+    outline: none;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    .form-error {
+        color: #ca0808;
+        .form-control {
+            border: 1px solid #ca0808;
+        }
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.btn {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    margin: 0 0;
+    padding: 12px 16px;
+    border-radius: 4px;
+    border: 0;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 2px 1px 2px #e4e6ef;
+}
+
+.btn-lg {
+    padding: 8px 10px;
+    font-size: 16px;
+}
+
+.btn-med {
+    padding: 8px 10px;
+    font-size: 12px;
+}
+
+.btn-sticky {
+    position: sticky;
+}
+
+.btn-sm {
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
+.btn-md {
+    padding: 10px 12px;
+    font-size: 12px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #00b199;
+}
+
+.btn-outlined {
+    font-size: _rem(16px);
+    color: #00b199;
+    border: 1px solid #00b199;
+    background-color: transparent;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+
+/*********************
+    DATE PICKER
+***********************/
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+
+/*********************
+    SELECT BOX
+***********************/
+
+.select-container {
+    position: relative;
+    cursor: pointer;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #bfbbbb;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    box-shadow: 1px 1px 2px #dfdfdf;
+    &.sm {
+        font-size: 12px;
+        padding: 10px 10px;
+        .chip {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 4px;
+        }
+    }
+    &.md {
+        font-size: 14px;
+        padding: 14px 10px;
+        .chip {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 5px 4px;
+        }
+    }
+     &.lg {
+        font-size: 16px;
+        padding: 16px 10px;
+        .chip {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 5px 4px;
+        }
+    }
+    .select-header {
+        font-weight: 500;
+        padding: 0 0px;
+        &::after {
+            position: absolute;
+            right: 5%;
+            content: " ";
+            border-left: 2px solid #aaa;
+            border-bottom: 2px solid #aaa;
+            height: 8px;
+            width: 8px;
+            transform: rotate(-45deg);
+        }
+    }
+    .select-options {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 1px 1px 2px #dfdfdf;
+        border: 1px solid #bfbbbb;
+        z-index: 1;
+        span {
+            padding: 10px 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #eee;
+            svg {
+                margin-right: 6px;
+            }
+        }
+    }
+    .chip {
+        display: inline-block;
+        margin-right: 5px;
+        color: #000;
+        font-weight: 500;
+        background-color: aliceblue;
+        max-width: 140px;
+        width: 116px;
+        text-overflow: ellipsis;
+        border-radius: 12px;
+        overflow: hidden;
+        text-wrap: auto;
+        text-align: center;
+        color: #005db0;
+    }
+}
