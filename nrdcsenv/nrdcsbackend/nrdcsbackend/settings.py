@@ -115,6 +115,14 @@ DATABASES = {
         "PASSWORD": os.environ.get("PGPASSWORD", ""),
         "HOST": "zephyr.proxy.rlwy.net",
         "PORT": "18035",
+    },
+    "dev": {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'nrdcsapp-db',
+        'USER': 'postgres',
+        'PASSWORD': 'welcome',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
