@@ -113,7 +113,7 @@ DATABASES = {
         "NAME": "railway",
         "USER": "postgres",
         "PASSWORD": os.environ.get("PGPASSWORD", ""),
-        "HOST": "caboose.proxy.rlwy.net",
+        "HOST": "zephyr.proxy.rlwy.net",
         "PORT": "5432",
     }
 }
